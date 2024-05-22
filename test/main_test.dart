@@ -14,4 +14,14 @@ void main() async {
         }),
         completes);
   });
+
+  test('main.dart.checkTime() simple test', () {
+    final now = DateTime.now();
+    final expired = now.subtract(const Duration(minutes: 6));
+    final expiring = now.subtract(const Duration(minutes: 5));
+    final notExpired = now.subtract(const Duration(minutes: 4));
+    expect(app.timeExpired(now, expired), true);
+    expect(app.timeExpired(now, expiring), true);
+    expect(app.timeExpired(now, notExpired), false);
+  });
 }
