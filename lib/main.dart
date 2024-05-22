@@ -4,6 +4,7 @@ import 'package:skin_sitch/api/uv.dart';
 import 'package:skin_sitch/api/weather.dart';
 
 const applySunscreen = "Use sunscreen!";
+const expiryTime = 5;
 
 void main() {
   runApp(const MyApp());
@@ -110,11 +111,9 @@ Center displayInfo(final double currentUVI, final int currentHumidity,
   return Center(
       child: Column(
     children: [
-      // displayUvIndexIcon(currentUVI, context),
-      // readOutUVIndex(currentUVI),
-      displayUvIndexIcon(6, context),
+      displayUvIndexIcon(currentUVI, context), // change for EUT
       const Padding(padding: EdgeInsets.all(2.0)),
-      readOutUVIndex(6),
+      readOutUVIndex(currentUVI), // change for EUT
     ],
   ));
 }
@@ -212,7 +211,7 @@ Future<Breakdown> fetchBreakdown(
 }
 
 bool timeExpired(final DateTime now, final DateTime comp) {
-  DateTime expiry = comp.add(const Duration(minutes: 5));
+  DateTime expiry = comp.add(const Duration(minutes: expiryTime));
   /*
   The three potential results are:
     * a negative value if expiry isBefore now; i.e. expired
