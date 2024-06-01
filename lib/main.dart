@@ -43,8 +43,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double _currLat = 44.9169;
-  double _currLng = -93.3179;
   bool _runOnce = false;
   DateTime _current = DateTime.now();
   late Breakdown _breakdown;
@@ -58,28 +56,9 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: <Widget>[
               Builder(builder: (context) {
-                print("_currLat: ${_currLat}");
-                print("_currLng: ${_currLng}");
                 if (!_runOnce || timeExpired(DateTime.now(), _current)) {
                   return FutureBuilder(
-                      future: determinePosition(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<Position> snapshot) {
-                        if (snapshot.hasData) {
-                          _currLat = snapshot.data!.latitude;
-                          _currLng = snapshot.data!.longitude;
-                        }
-                        return Container();
-                      });
-                } else {
-                  return Container();
-                }
-              }),
-              Builder(builder: (context) {
-                if (!_runOnce || timeExpired(DateTime.now(), _current)) {
-                  return FutureBuilder(
-                      future: fetchBreakdown(
-                          "mattdhoy@gmail.com", _currLat, _currLng),
+                      future: fetchBreakdown("mattdhoy@gmail.com"),
                       builder: ((context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
                           if (snapshot.hasError) {
@@ -221,11 +200,13 @@ Column readOutUVIndex(final double currentUVI) {
   }
 }
 
-Future<Breakdown> fetchBreakdown(
-    final String token, final double lat, final double lng) async {
+Future<Breakdown> fetchBreakdown(final String token) async {
+  // TODO: Handle use case where they do not allow
+  Position position = await determinePosition();
   return Breakdown(
-      uvIndex: await fetchUv(lat, lng),
-      weather: await fetchWeather(token, await fetchZone(token, lat, lng)));
+      uvIndex: await fetchUv(position.latitude, position.longitude),
+      weather: await fetchWeather(token,
+          await fetchZone(token, position.latitude, position.longitude)));
 }
 
 bool timeExpired(final DateTime now, final DateTime comp) {
