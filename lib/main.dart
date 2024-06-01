@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:skin_sitch/api/model/model.dart';
 import 'package:skin_sitch/api/uv.dart';
 import 'package:skin_sitch/api/weather.dart';
+import 'package:geolocator/geolocator.dart';
 
 const applySunscreen = "Use sunscreen!";
 const expiryTime = 5;
