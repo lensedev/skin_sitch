@@ -6,7 +6,7 @@ import 'package:skin_sitch/api/location.dart';
 import 'package:geolocator/geolocator.dart';
 
 const applySunscreen = "Use sunscreen!";
-const expiryTime = 0;
+const expiryTime = 5;
 
 void main() {
   runApp(const MyApp());
