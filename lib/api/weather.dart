@@ -5,7 +5,8 @@ import 'package:http/http.dart';
 
 import 'model/weather_model.dart';
 
-Future<Grid> fetchZone(String token, double lat, double lng) async {
+Future<Grid> fetchZone(
+    final String token, final double lat, final double lng) async {
   final url = Uri.parse("https://api.weather.gov/points/$lat,$lng");
   final Map<String, String> headers = {
     "User-Agent": token,
@@ -22,7 +23,7 @@ Future<Grid> fetchZone(String token, double lat, double lng) async {
   );
 }
 
-Future<Weather> fetchWeather(String token, Grid grid) async {
+Future<Weather> fetchWeather(final String token, final Grid grid) async {
   final url = Uri.parse(
       "https://api.weather.gov/gridpoints/${grid.cwa}/${grid.gridX},${grid.gridY}/forecast/hourly");
   final Map<String, String> headers = {
