@@ -63,8 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Builder(builder: (context) {
                 if (!_runOnce || timeExpired(DateTime.now(), _current)) {
                   return FutureBuilder(
-                      future: fetchBreakdown("mattdhoy@gmail.com",
-                          injection.get<LocationUtility>()),
+                      future: fetchBreakdown("mattdhoy@gmail.com"),
                       builder: ((context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
                           if (snapshot.hasError) {
@@ -206,12 +205,10 @@ Column readOutUVIndex(final double currentUVI) {
   }
 }
 
-Future<Breakdown> fetchBreakdown(
-    final String token, final LocationUtility locationUtility) async {
+Future<Breakdown> fetchBreakdown(final String token) async {
   // TODO: Handle use case where they do not allow
-  Position position = await locationUtility.determinePosition();
-  print(position.latitude);
-  print(position.longitude);
+  Position position =
+      await injection.get<LocationUtility>().determinePosition();
   return Breakdown(
       uvIndex: await fetchUv(position.latitude, position.longitude),
       weather: await fetchWeather(token,
