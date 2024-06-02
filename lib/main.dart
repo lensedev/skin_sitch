@@ -211,8 +211,9 @@ Future<Breakdown> fetchBreakdown(final String token) async {
       await injection.get<LocationUtility>().determinePosition();
   return Breakdown(
       uvIndex: await fetchUv(position.latitude, position.longitude),
-      weather: await fetchWeather(token,
-          await fetchZone(token, position.latitude, position.longitude)));
+      weather: await fetchWeather(
+          token, await fetchZone(token, position.latitude, position.longitude)),
+      position: position);
 }
 
 bool timeExpired(final DateTime now, final DateTime comp) {
