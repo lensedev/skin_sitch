@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:skin_sitch/api/model/model.dart';
-import 'package:skin_sitch/api/uv.dart';
-import 'package:skin_sitch/api/weather.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:get_it/get_it.dart';
+
+import 'api/location.dart';
+import 'api/model/model.dart';
+import 'api/uv.dart';
+import 'api/weather.dart';
+
+final GetIt injection = GetIt.instance;
 
 const applySunscreen = "Use sunscreen!";
 const expiryTime = 5;
 
 void main() {
+  injection.registerSingleton<LocationUtility>(LocationUtility());
   runApp(const MyApp());
 }
 
@@ -56,8 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Builder(builder: (context) {
                 if (!_runOnce || timeExpired(DateTime.now(), _current)) {
                   return FutureBuilder(
-                      future: fetchBreakdown(
-                          "mattdhoy@gmail.com", 44.9169, -93.3179),
+                      future: fetchBreakdown("mattdhoy@gmail.com"),
                       builder: ((context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.done) {
                           if (snapshot.hasError) {
@@ -199,11 +205,14 @@ Column readOutUVIndex(final double currentUVI) {
   }
 }
 
-Future<Breakdown> fetchBreakdown(
-    final String token, final double lat, final double lng) async {
+Future<Breakdown> fetchBreakdown(final String token) async {
+  // TODO: Handle use case where they do not allow
+  Position position =
+      await injection.get<LocationUtility>().determinePosition();
   return Breakdown(
-      uvIndex: await fetchUv(lat, lng),
-      weather: await fetchWeather(token, await fetchZone(token, lat, lng)));
+      uvIndex: await fetchUv(position.latitude, position.longitude),
+      weather: await fetchWeather(token,
+          await fetchZone(token, position.latitude, position.longitude)));
 }
 
 bool timeExpired(final DateTime now, final DateTime comp) {
