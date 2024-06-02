@@ -28,7 +28,6 @@ void main() async {
     when(mlu.determinePosition).thenAnswer((_) => Future(() => pos));
     expect(
         app.fetchBreakdown(token).then((result) {
-          print(result.uvIndex.now.uvi);
           expect(result.uvIndex.now.uvi, greaterThan(-1));
           expect(result.weather.temp, greaterThan(-50));
         }),
