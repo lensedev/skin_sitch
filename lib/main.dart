@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get_it/get_it.dart';
@@ -78,8 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             _runOnce = true;
                             _breakdown = snapshot.data as Breakdown;
                             _current = DateTime.now();
-                            return displayInfo(_breakdown.uvIndex.now.uvi,
-                                _breakdown.weather.humidity, context);
+                            return displayInfo(_breakdown, context);
                           } else {
                             return Center(
                               child: Text(
@@ -96,10 +96,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         }
                       }));
                 } else {
-                  return displayInfo(_breakdown.uvIndex.now.uvi,
-                      _breakdown.weather.humidity, context);
+                  return displayInfo(_breakdown, context);
                 }
-              })
+              }),
             ],
           ),
         ),
@@ -108,14 +107,36 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-Center displayInfo(final double currentUVI, final int currentHumidity,
-    final BuildContext context) {
+Center displayInfo(final Breakdown breakdown, final BuildContext context) {
   return Center(
       child: Column(
     children: [
-      displayUvIndexIcon(currentUVI, context), // change for EUT
+      displayUvIndexIcon(breakdown.uvIndex.now.uvi, context), // change for EUT
       const Padding(padding: EdgeInsets.all(2.0)),
-      readOutUVIndex(currentUVI), // change for EUT
+      readOutUVIndex(breakdown.uvIndex.now.uvi), // change for EUT
+      const Padding(padding: EdgeInsets.all(3.0)),
+      Center(
+          child: AspectRatio(
+        aspectRatio: 2.0,
+        child: LineChart(LineChartData(
+          gridData: const FlGridData(
+            show: true,
+            drawVerticalLine: true,
+            horizontalInterval: 2,
+            verticalInterval: 4,
+          ),
+          titlesData: const FlTitlesData(
+              show: true,
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  // getTitlesWidget: leftTitleWidgets,
+                ),
+              )),
+          maxY: 12,
+          lineBarsData: [breakdown.uvIndex.readForecast()],
+        )),
+      ))
     ],
   ));
 }
