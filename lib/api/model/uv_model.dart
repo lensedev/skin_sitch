@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:skin_sitch/main.dart';
 
 class UVIndex {
   TimeCast now;
@@ -74,16 +75,26 @@ class UVIndex {
       dotData: const FlDotData(
         show: false,
       ),
-      // TODO: This gradient is relative to the bar, but it should be absolute
       belowBarData: BarAreaData(
         show: true,
         gradient: const LinearGradient(
           begin: Alignment.bottomCenter,
           end: Alignment.topCenter,
+          stops: [
+            0.083,
+            0.2083,
+            0.4583,
+            0.625,
+            0.875,
+            1,
+          ],
           colors: [
-            Colors.green,
-            Colors.yellow,
-            Colors.red,
+            safeGreen,
+            transitionGreen,
+            dangerYellow,
+            dangerOrange,
+            dangerRed,
+            dangerPurple,
           ],
         ),
       ),

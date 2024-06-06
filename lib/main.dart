@@ -12,6 +12,12 @@ final GetIt injection = GetIt.instance;
 
 const applySunscreen = "Use sunscreen!";
 const expiryTime = 5;
+const safeGreen = Color.fromARGB(255, 89, 228, 35);
+const transitionGreen = Color.fromARGB(255, 157, 197, 1);
+const dangerYellow = Color.fromARGB(255, 255, 206, 0);
+const dangerOrange = Color.fromARGB(255, 254, 128, 0);
+const dangerRed = Color.fromARGB(255, 245, 81, 37);
+const dangerPurple = Color.fromARGB(255, 158, 70, 205);
 
 void main() {
   injection.registerSingleton<LocationUtility>(LocationUtility());
@@ -125,16 +131,10 @@ Center displayInfo(final Breakdown breakdown, final BuildContext context) {
             horizontalInterval: 2,
             verticalInterval: 4,
           ),
-          titlesData: const FlTitlesData(
-              show: true,
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  // getTitlesWidget: leftTitleWidgets,
-                ),
-              )),
           maxY: 12,
-          lineBarsData: [breakdown.uvIndex.readForecast()],
+          lineBarsData: [
+            breakdown.uvIndex.readForecast(),
+          ],
         )),
       ))
     ],
@@ -159,7 +159,6 @@ Image _formatUVIndexImage(final String asset) {
 }
 
 Image selectUvIndexImage(final double currentUVI) {
-  // TODO: Consider Enum of UVI for unified selection
   if (currentUVI < 1) {
     return _formatUVIndexImage('assets/images/UV-0.png');
   } else if (1 <= currentUVI && currentUVI < 2.5) {
@@ -206,23 +205,18 @@ Column _formatUVIndexReadOut(
 
 Column readOutUVIndex(final double currentUVI) {
   if (currentUVI < 1) {
-    return _formatUVIndexReadOut(
-        const Color.fromARGB(255, 89, 228, 35), currentUVI, "Safe in the sun!");
+    return _formatUVIndexReadOut(safeGreen, currentUVI, "Safe in the sun!");
   } else if (1 <= currentUVI && currentUVI < 2.5) {
-    return _formatUVIndexReadOut(
-        const Color.fromARGB(255, 157, 197, 1), currentUVI, applySunscreen);
+    return _formatUVIndexReadOut(transitionGreen, currentUVI, applySunscreen);
   } else if (2.5 <= currentUVI && currentUVI < 5.5) {
-    return _formatUVIndexReadOut(
-        const Color.fromARGB(255, 255, 206, 0), currentUVI, applySunscreen);
+    return _formatUVIndexReadOut(dangerYellow, currentUVI, applySunscreen);
   } else if (5.5 <= currentUVI && currentUVI < 7.5) {
-    return _formatUVIndexReadOut(
-        const Color.fromARGB(255, 254, 128, 0), currentUVI, applySunscreen);
+    return _formatUVIndexReadOut(dangerOrange, currentUVI, applySunscreen);
   } else if (7.5 <= currentUVI && currentUVI < 10.5) {
-    return _formatUVIndexReadOut(const Color.fromARGB(255, 245, 81, 37),
-        currentUVI, "Very high UV, limit exposure!");
-  } else {
     return _formatUVIndexReadOut(
-        const Color.fromARGB(255, 158, 70, 205), currentUVI, "Remain indoors!");
+        dangerRed, currentUVI, "Very high UV, limit exposure!");
+  } else {
+    return _formatUVIndexReadOut(dangerPurple, currentUVI, "Remain indoors!");
   }
 }
 
