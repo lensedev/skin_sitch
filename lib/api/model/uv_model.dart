@@ -64,7 +64,7 @@ class UVIndex {
 
   LineChartBarData readForecast() {
     List<FlSpot> spots = [FlSpot(0, now.uvi)];
-    for (var i = 1; i < 24; i++) {
+    for (var i = 1; i < 25; i++) {
       spots.add(FlSpot(i.toDouble(), forecast[i - 1].uvi));
     }
     return LineChartBarData(
@@ -75,6 +75,7 @@ class UVIndex {
       dotData: const FlDotData(
         show: false,
       ),
+      color: Colors.black,
       belowBarData: BarAreaData(
         show: true,
         gradient: const LinearGradient(

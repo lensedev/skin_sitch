@@ -10,14 +10,40 @@ import 'api/weather.dart';
 
 final GetIt injection = GetIt.instance;
 
-const applySunscreen = "Use sunscreen!";
-const expiryTime = 5;
-const safeGreen = Color.fromARGB(255, 89, 228, 35);
-const transitionGreen = Color.fromARGB(255, 157, 197, 1);
-const dangerYellow = Color.fromARGB(255, 255, 206, 0);
-const dangerOrange = Color.fromARGB(255, 254, 128, 0);
-const dangerRed = Color.fromARGB(255, 245, 81, 37);
-const dangerPurple = Color.fromARGB(255, 158, 70, 205);
+const String applySunscreen = "Use sunscreen!";
+const int expiryTime = 5;
+const Color safeGreen = Color.fromARGB(255, 89, 228, 35);
+const Color transitionGreen = Color.fromARGB(255, 157, 197, 1);
+const Color dangerYellow = Color.fromARGB(255, 255, 206, 0);
+const Color dangerOrange = Color.fromARGB(255, 254, 128, 0);
+const Color dangerRed = Color.fromARGB(255, 245, 81, 37);
+const Color dangerPurple = Color.fromARGB(255, 158, 70, 205);
+const Map<int, String> times = {
+  0: "12AM",
+  1: "1AM",
+  2: "2AM",
+  3: "3AM",
+  4: "4AM",
+  5: "5AM",
+  6: "6AM",
+  7: "7AM",
+  8: "8AM",
+  9: "9AM",
+  10: "10AM",
+  11: "11AM",
+  12: "12PM",
+  13: "1PM",
+  14: "2PM",
+  15: "3PM",
+  16: "4PM",
+  17: "5PM",
+  18: "6PM",
+  19: "7PM",
+  20: "8PM",
+  21: "9PM",
+  22: "10PM",
+  23: "11PM",
+};
 
 void main() {
   injection.registerSingleton<LocationUtility>(LocationUtility());
@@ -117,10 +143,11 @@ Center displayInfo(final Breakdown breakdown, final BuildContext context) {
   return Center(
       child: Column(
     children: [
-      displayUvIndexIcon(breakdown.uvIndex.now.uvi, context), // change for EUT
       const Padding(padding: EdgeInsets.all(2.0)),
+      displayUvIndexIcon(breakdown.uvIndex.now.uvi, context), // change for EUT
+      const Padding(padding: EdgeInsets.all(5.0)),
       readOutUVIndex(breakdown.uvIndex.now.uvi), // change for EUT
-      const Padding(padding: EdgeInsets.all(3.0)),
+      const Padding(padding: EdgeInsets.all(5.0)),
       Center(
           child: AspectRatio(
         aspectRatio: 2.0,
@@ -131,6 +158,41 @@ Center displayInfo(final Breakdown breakdown, final BuildContext context) {
             horizontalInterval: 2,
             verticalInterval: 4,
           ),
+          titlesData: FlTitlesData(
+              topTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 23,
+                getTitlesWidget: (value, meta) => const Text(""),
+              )),
+              rightTitles: const AxisTitles(
+                  sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 44,
+                interval: 2,
+              )),
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  interval: 4,
+                  getTitlesWidget: (value, meta) {
+                    var hourCalc = (DateTime.now().hour + value) % 24;
+                    String hour = times[hourCalc] ?? "12AM";
+                    return SideTitleWidget(
+                      axisSide: meta.axisSide,
+                      child: Text(hour),
+                    );
+                    // child: Text("$value"));
+                  },
+                  showTitles: true,
+                  reservedSize: 23,
+                ),
+              ),
+              leftTitles: const AxisTitles(
+                  sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 44,
+                interval: 2,
+              ))),
           maxY: 12,
           lineBarsData: [
             breakdown.uvIndex.readForecast(),
