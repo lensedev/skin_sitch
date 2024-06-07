@@ -2,6 +2,9 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+import 'package:skin_sitch/main.dart';
 
 class UVIndex {
   TimeCast now;
@@ -58,6 +61,46 @@ class UVIndex {
 
   @override
   int get hashCode => now.hashCode ^ forecast.hashCode;
+
+  LineChartBarData readForecast() {
+    List<FlSpot> spots = [FlSpot(0, now.uvi)];
+    for (var i = 1; i < 25; i++) {
+      spots.add(FlSpot(i.toDouble(), forecast[i - 1].uvi));
+    }
+    return LineChartBarData(
+      show: true,
+      isCurved: true,
+      barWidth: 1,
+      spots: spots,
+      dotData: const FlDotData(
+        show: false,
+      ),
+      color: Colors.black,
+      belowBarData: BarAreaData(
+        show: true,
+        gradient: const LinearGradient(
+          begin: Alignment.bottomCenter,
+          end: Alignment.topCenter,
+          stops: [
+            0.083,
+            0.2083,
+            0.4583,
+            0.625,
+            0.875,
+            1,
+          ],
+          colors: [
+            safeGreen,
+            transitionGreen,
+            dangerYellow,
+            dangerOrange,
+            dangerRed,
+            dangerPurple,
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class TimeCast {
