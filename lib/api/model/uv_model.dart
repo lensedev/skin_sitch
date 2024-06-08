@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:skin_sitch/api/gradient.dart';
 import 'package:skin_sitch/main.dart';
 
 class UVIndex {
@@ -76,28 +77,26 @@ class UVIndex {
         show: false,
       ),
       color: Colors.black,
-      belowBarData: BarAreaData(
-        show: true,
-        gradient: const LinearGradient(
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
-          stops: [
-            0.083,
-            0.2083,
-            0.4583,
-            0.625,
-            0.875,
-            1,
-          ],
-          colors: [
-            safeGreen,
-            transitionGreen,
-            dangerYellow,
-            dangerOrange,
-            dangerRed,
-            dangerPurple,
-          ],
-        ),
+      belowBarData: createBarAreaData(
+        getMaxSpot(spots),
+        [
+          0, // 0
+          0.083, // 1
+          0.2083, // 2.5
+          0.4583, // 5.5
+          0.625, // 7.5
+          0.875, // 10.5
+          1, // 12
+        ],
+        [
+          safeGreen,
+          safeGreen,
+          transitionGreen,
+          dangerYellow,
+          dangerOrange,
+          dangerRed,
+          dangerPurple,
+        ],
       ),
     );
   }
@@ -153,4 +152,12 @@ class TimeCast {
 
   @override
   int get hashCode => time.hashCode ^ uvi.hashCode;
+}
+
+double getMaxSpot(final List<FlSpot> spots) {
+  double maxY = 0;
+  for (var i = 0; i < spots.length - 1; i++) {
+    if (spots[i].y > maxY) maxY = spots[i].y;
+  }
+  return maxY;
 }
