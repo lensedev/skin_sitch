@@ -82,17 +82,15 @@ class UVIndex {
         getMaxSpot(spots),
         [
           0, // 0
-          0.083, // 1
-          0.2083, // 2.5
-          0.4583, // 5.5
+          0.25, // 3
+          0.4167, // 5
           0.625, // 7.5
           0.875, // 10.5
           1, // 12
         ],
         [
           safeGreen,
-          safeGreen,
-          transitionGreen,
+          dangerYellow,
           dangerYellow,
           dangerOrange,
           dangerRed,
