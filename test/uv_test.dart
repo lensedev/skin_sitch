@@ -15,7 +15,5 @@ void main() async {
     for (var i = 0; i < 15; i++) {
       spots.add(FlSpot(i.toDouble(), i.toDouble()));
     }
-    print(spots);
-    print(getMaxSpot(spots));
   });
 }
