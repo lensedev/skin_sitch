@@ -34,8 +34,6 @@ Future<Weather> fetchWeather(final String token, final Grid grid) async {
     headers: headers,
   );
   final period = jsonDecode(response.body)['properties']["periods"][0];
-  // final period = jsonDecode(response.body);
-  // final props = period['properties']['periods'][0];
   return Weather(
       humidity: period['relativeHumidity']['value'],
       temp: period["temperature"]);
