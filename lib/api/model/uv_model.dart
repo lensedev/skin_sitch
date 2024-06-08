@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -156,8 +157,8 @@ class TimeCast {
 
 double getMaxSpot(final List<FlSpot> spots) {
   double maxY = 0;
-  for (var i = 0; i < spots.length - 1; i++) {
-    if (spots[i].y > maxY) maxY = spots[i].y;
+  for (var i = 0; i < spots.length; i++) {
+    maxY = max(spots[i].y, maxY);
   }
   return maxY;
 }

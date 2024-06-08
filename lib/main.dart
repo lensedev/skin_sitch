@@ -195,7 +195,7 @@ Center displayInfo(final Breakdown breakdown, final BuildContext context) {
                 reservedSize: 44,
                 interval: 2,
               ))),
-          maxY: 12,
+          maxY: roundUp(breakdown.getUvUpperBound()),
           lineBarsData: [
             breakdown.uvIndex.readForecast(),
           ],
@@ -308,4 +308,12 @@ bool timeExpired(final DateTime now, final DateTime comp) {
   } else {
     return false;
   }
+}
+
+double roundUp(final double input) {
+  var rounded = (input + 0.5).round();
+  if (rounded % 2 == 1) {
+    return (rounded + 1).toDouble();
+  }
+  return rounded.toDouble();
 }

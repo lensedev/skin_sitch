@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:geolocator/geolocator.dart';
 
@@ -10,6 +11,7 @@ class Breakdown {
   UVIndex uvIndex;
   Weather weather;
   Position position;
+  int _uvUpperBound = 12;
 
   Breakdown({
     required this.uvIndex,
@@ -49,6 +51,14 @@ class Breakdown {
 
   factory Breakdown.fromJson(String source) =>
       Breakdown.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  double getUvUpperBound() {
+    double maxUv = uvIndex.now.uvi;
+    for (int i = 0; i < 24; i++) {
+      maxUv = max(maxUv, uvIndex.forecast[i].uvi);
+    }
+    return maxUv;
+  }
 
   @override
   String toString() =>
