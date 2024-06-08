@@ -11,7 +11,6 @@ class Breakdown {
   UVIndex uvIndex;
   Weather weather;
   Position position;
-  int _uvUpperBound = 12;
 
   Breakdown({
     required this.uvIndex,
