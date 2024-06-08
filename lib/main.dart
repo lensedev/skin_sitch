@@ -11,7 +11,7 @@ import 'api/weather.dart';
 final GetIt injection = GetIt.instance;
 
 const String applySunscreen = "Use sunscreen!";
-const int expiryTime = 5;
+const int expiryTime = 0;
 const Color safeGreen = Color.fromARGB(255, 89, 228, 35);
 const Color transitionGreen = Color.fromARGB(255, 157, 197, 1);
 const Color dangerYellow = Color.fromARGB(255, 255, 206, 0);
@@ -121,6 +121,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             );
                           }
+                        } else if (_runOnce) {
+                          return displayInfo(_breakdown, context);
                         } else {
                           return const Center(
                             child: CircularProgressIndicator(),
