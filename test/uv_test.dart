@@ -1,4 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
+import 'package:skin_sitch/api/model/uv_model.dart';
 import 'package:test/test.dart';
 import 'package:skin_sitch/api/uv.dart' as uv;
 
@@ -14,5 +15,6 @@ void main() async {
     for (var i = 0; i < 15; i++) {
       spots.add(FlSpot(i.toDouble(), i.toDouble()));
     }
+    expect(getMaxSpot(spots), 14);
   });
 }
