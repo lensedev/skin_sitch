@@ -118,8 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             _runOnce = true;
                             _breakdown = snapshot.data as Breakdown;
                             _current = DateTime.now();
-                            return displayInfo(
-                                _breakdown, context, _hourFormat);
+                            return displayInfo(_breakdown, _hourFormat);
                           } else {
                             return Center(
                               child: Text(
@@ -130,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             );
                           }
                         } else if (_runOnce) {
-                          return displayInfo(_breakdown, context, _hourFormat);
+                          return displayInfo(_breakdown, _hourFormat);
                         } else {
                           return const Center(
                             child: CircularProgressIndicator(),
@@ -138,7 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         }
                       }));
                 } else {
-                  return displayInfo(_breakdown, context, _hourFormat);
+                  return displayInfo(_breakdown, _hourFormat);
                 }
               }),
               SegmentedButton<DayView>(
@@ -171,16 +170,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-Center displayInfo(
-  final Breakdown breakdown,
-  final BuildContext context,
-  final int hourFormat,
-) {
+Center displayInfo(final Breakdown breakdown, final int hourFormat) {
   return Center(
       child: Column(
     children: [
       const Padding(padding: EdgeInsets.all(2.0)),
-      displayUvIndexIcon(breakdown.uvIndex.now.uvi, context), // change for EUT
+      displayUvIndexIcon(breakdown.uvIndex.now.uvi), // change for EUT
       const Padding(padding: EdgeInsets.all(5.0)),
       readOutUVIndex(breakdown.uvIndex.now.uvi), // change for EUT
       const Padding(padding: EdgeInsets.all(5.0)),
@@ -240,7 +235,7 @@ Center displayInfo(
   ));
 }
 
-Row displayUvIndexIcon(final double currentUVI, final BuildContext context) {
+Row displayUvIndexIcon(final double currentUVI) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
