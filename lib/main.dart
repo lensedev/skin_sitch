@@ -45,7 +45,7 @@ const Map<int, String> times = {
   23: "11PM",
 };
 
-enum DayViews {
+enum DayView {
   oneDay,
   twoDay,
 }
@@ -90,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
   DateTime _current = DateTime.now();
   late Breakdown _breakdown;
   int _hourFormat = 24;
-  DayViews _dayView = DayViews.oneDay;
+  DayView _dayView = DayView.oneDay;
 
   @override
   Widget build(BuildContext context) {
@@ -141,21 +141,20 @@ class _MyHomePageState extends State<MyHomePage> {
                   return displayInfo(_breakdown, context, _hourFormat);
                 }
               }),
-              SegmentedButton<DayViews>(
+              SegmentedButton<DayView>(
                 segments: const [
                   ButtonSegment(
-                    value: DayViews.oneDay,
+                    value: DayView.oneDay,
                     label: Text("One Day"),
                   ),
-                  ButtonSegment(
-                      value: DayViews.twoDay, label: Text("Three Day"))
+                  ButtonSegment(value: DayView.twoDay, label: Text("Three Day"))
                 ],
-                selected: <DayViews>{_dayView},
+                selected: <DayView>{_dayView},
                 showSelectedIcon: false,
-                onSelectionChanged: (Set<DayViews> newSelection) {
+                onSelectionChanged: (Set<DayView> newSelection) {
                   setState(() {
                     _dayView = newSelection.first;
-                    newSelection.first == DayViews.oneDay
+                    newSelection.first == DayView.oneDay
                         ? _hourFormat = 24
                         : _hourFormat = 72;
                   });
