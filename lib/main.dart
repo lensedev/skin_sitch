@@ -197,7 +197,7 @@ Center displayInfo(final Breakdown breakdown, final BuildContext context) {
               ))),
           maxY: roundUp(breakdown.getUvUpperBound()),
           lineBarsData: [
-            breakdown.uvIndex.readForecast(),
+            breakdown.uvIndex.readForecast(24),
           ],
         )),
       ))
