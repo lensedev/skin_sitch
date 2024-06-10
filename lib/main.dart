@@ -147,7 +147,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     value: DayView.oneDay,
                     label: Text("One Day"),
                   ),
-                  ButtonSegment(value: DayView.twoDay, label: Text("Three Day"))
+                  ButtonSegment(
+                    value: DayView.twoDay,
+                    label: Text("Three Day"),
+                  )
                 ],
                 selected: <DayView>{_dayView},
                 showSelectedIcon: false,
