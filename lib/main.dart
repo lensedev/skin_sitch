@@ -45,6 +45,11 @@ const Map<int, String> times = {
   23: "11PM",
 };
 
+enum DayViews {
+  oneDay,
+  twoDay,
+}
+
 void main() {
   injection.registerSingleton<LocationUtility>(LocationUtility());
   runApp(const MyApp());
@@ -84,6 +89,8 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _runOnce = false;
   DateTime _current = DateTime.now();
   late Breakdown _breakdown;
+  int _hourFormat = 24;
+  DayViews _dayView = DayViews.oneDay;
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +118,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             _runOnce = true;
                             _breakdown = snapshot.data as Breakdown;
                             _current = DateTime.now();
-                            return displayInfo(_breakdown, context);
+                            return displayInfo(
+                                _breakdown, context, _hourFormat);
                           } else {
                             return Center(
                               child: Text(
@@ -122,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             );
                           }
                         } else if (_runOnce) {
-                          return displayInfo(_breakdown, context);
+                          return displayInfo(_breakdown, context, _hourFormat);
                         } else {
                           return const Center(
                             child: CircularProgressIndicator(),
@@ -130,9 +138,29 @@ class _MyHomePageState extends State<MyHomePage> {
                         }
                       }));
                 } else {
-                  return displayInfo(_breakdown, context);
+                  return displayInfo(_breakdown, context, _hourFormat);
                 }
               }),
+              SegmentedButton<DayViews>(
+                segments: const [
+                  ButtonSegment(
+                    value: DayViews.oneDay,
+                    label: Text("One Day"),
+                  ),
+                  ButtonSegment(
+                      value: DayViews.twoDay, label: Text("Three Day"))
+                ],
+                selected: <DayViews>{_dayView},
+                showSelectedIcon: false,
+                onSelectionChanged: (Set<DayViews> newSelection) {
+                  setState(() {
+                    _dayView = newSelection.first;
+                    newSelection.first == DayViews.oneDay
+                        ? _hourFormat = 24
+                        : _hourFormat = 72;
+                  });
+                },
+              )
             ],
           ),
         ),
@@ -141,7 +169,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-Center displayInfo(final Breakdown breakdown, final BuildContext context) {
+Center displayInfo(
+  final Breakdown breakdown,
+  final BuildContext context,
+  final int hourFormat,
+) {
   return Center(
       child: Column(
     children: [
@@ -154,11 +186,11 @@ Center displayInfo(final Breakdown breakdown, final BuildContext context) {
           child: AspectRatio(
         aspectRatio: 2.0,
         child: LineChart(LineChartData(
-          gridData: const FlGridData(
+          gridData: FlGridData(
             show: true,
             drawVerticalLine: true,
             horizontalInterval: 2,
-            verticalInterval: 4,
+            verticalInterval: hourFormat == 24 ? 4 : 12,
           ),
           titlesData: FlTitlesData(
               topTitles: AxisTitles(
@@ -175,7 +207,7 @@ Center displayInfo(final Breakdown breakdown, final BuildContext context) {
               )),
               bottomTitles: AxisTitles(
                 sideTitles: SideTitles(
-                  interval: 4,
+                  interval: hourFormat / 6,
                   getTitlesWidget: (value, meta) {
                     var hourCalc = (DateTime.now().hour + value) % 24;
                     String hour = times[hourCalc] ?? "12AM";
@@ -195,12 +227,13 @@ Center displayInfo(final Breakdown breakdown, final BuildContext context) {
                 reservedSize: 44,
                 interval: 2,
               ))),
-          maxY: roundUp(breakdown.getUvUpperBound()),
+          maxY: roundUp(breakdown.getUvUpperBound(hourFormat)),
           lineBarsData: [
-            breakdown.uvIndex.readForecast(24),
+            breakdown.uvIndex.readForecast(hourFormat),
           ],
         )),
-      ))
+      )),
+      const Padding(padding: EdgeInsets.all(10.0)),
     ],
   ));
 }
