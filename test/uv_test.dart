@@ -16,5 +16,7 @@ void main() async {
       spots.add(FlSpot(i.toDouble(), i.toDouble()));
     }
     expect(getMaxSpot(spots), 14);
+    spots.add(const FlSpot(15, 15));
+    expect(getMaxSpot(spots), 15);
   });
 }
