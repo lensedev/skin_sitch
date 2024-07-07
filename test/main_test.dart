@@ -43,4 +43,13 @@ void main() async {
     expect(app.timeExpired(now, expiring), true);
     expect(app.timeExpired(now, notExpired), false);
   });
+
+  test('main.dart.roundUp() simple test', () {
+    expect(app.roundUp(7.9), 8);
+    expect(app.roundUp(8.1), 10);
+    expect(app.roundUp(8.6), 10);
+    expect(app.roundUp(9.1), 10);
+    expect(app.roundUp(9.6), 10);
+    expect(app.roundUp(10), 12);
+  });
 }
