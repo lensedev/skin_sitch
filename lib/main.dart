@@ -45,6 +45,11 @@ const Map<int, String> times = {
   23: "11PM",
 };
 
+enum DayView {
+  oneDay,
+  twoDay,
+}
+
 void main() {
   injection.registerSingleton<LocationUtility>(LocationUtility());
   runApp(const MyApp());
@@ -137,6 +142,8 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
   bool _runOnce = false;
   DateTime _current = DateTime.now();
   late Breakdown _breakdown;
+  int _hourFormat = 24;
+  DayView _dayView = DayView.oneDay;
 
   // Assumes we always want to keep state alive
   @override
@@ -169,7 +176,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                             _runOnce = true;
                             _breakdown = snapshot.data as Breakdown;
                             _current = DateTime.now();
-                            return displayInfo(_breakdown, context);
+                            return displayInfo(_breakdown, _hourFormat);
                           } else {
                             return Center(
                               child: Text(
@@ -180,7 +187,7 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                             );
                           }
                         } else if (_runOnce) {
-                          return displayInfo(_breakdown, context);
+                          return displayInfo(_breakdown, _hourFormat);
                         } else {
                           return const Center(
                             child: CircularProgressIndicator(),
@@ -188,9 +195,31 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
                         }
                       }));
                 } else {
-                  return displayInfo(_breakdown, context);
+                  return displayInfo(_breakdown, _hourFormat);
                 }
               }),
+              SegmentedButton<DayView>(
+                segments: const [
+                  ButtonSegment(
+                    value: DayView.oneDay,
+                    label: Text("One Day"),
+                  ),
+                  ButtonSegment(
+                    value: DayView.twoDay,
+                    label: Text("Three Day"),
+                  )
+                ],
+                selected: <DayView>{_dayView},
+                showSelectedIcon: false,
+                onSelectionChanged: (Set<DayView> newSelection) {
+                  setState(() {
+                    _dayView = newSelection.first;
+                    newSelection.first == DayView.oneDay
+                        ? _hourFormat = 24
+                        : _hourFormat = 72;
+                  });
+                },
+              )
             ],
           ),
         ),
@@ -199,12 +228,12 @@ class HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMix
   }
 }
 
-Center displayInfo(final Breakdown breakdown, final BuildContext context) {
+Center displayInfo(final Breakdown breakdown, final int hourFormat) {
   return Center(
       child: Column(
     children: [
       const Padding(padding: EdgeInsets.all(2.0)),
-      displayUvIndexIcon(breakdown.uvIndex.now.uvi, context), // change for EUT
+      displayUvIndexIcon(breakdown.uvIndex.now.uvi), // change for EUT
       const Padding(padding: EdgeInsets.all(5.0)),
       readOutUVIndex(breakdown.uvIndex.now.uvi), // change for EUT
       const Padding(padding: EdgeInsets.all(5.0)),
@@ -212,11 +241,11 @@ Center displayInfo(final Breakdown breakdown, final BuildContext context) {
           child: AspectRatio(
         aspectRatio: 2.0,
         child: LineChart(LineChartData(
-          gridData: const FlGridData(
+          gridData: FlGridData(
             show: true,
             drawVerticalLine: true,
             horizontalInterval: 2,
-            verticalInterval: 4,
+            verticalInterval: hourFormat == 24 ? 4 : 12,
           ),
           titlesData: FlTitlesData(
               topTitles: AxisTitles(
@@ -233,7 +262,7 @@ Center displayInfo(final Breakdown breakdown, final BuildContext context) {
               )),
               bottomTitles: AxisTitles(
                 sideTitles: SideTitles(
-                  interval: 4,
+                  interval: hourFormat / 6,
                   getTitlesWidget: (value, meta) {
                     var hourCalc = (DateTime.now().hour + value) % 24;
                     String hour = times[hourCalc] ?? "12AM";
@@ -253,17 +282,18 @@ Center displayInfo(final Breakdown breakdown, final BuildContext context) {
                 reservedSize: 44,
                 interval: 2,
               ))),
-          maxY: roundUp(breakdown.getUvUpperBound()),
+          maxY: roundUp(breakdown.getUvUpperBound(hourFormat)),
           lineBarsData: [
-            breakdown.uvIndex.readForecast(),
+            breakdown.uvIndex.readForecast(hourFormat),
           ],
         )),
-      ))
+      )),
+      const Padding(padding: EdgeInsets.all(10.0)),
     ],
   ));
 }
 
-Row displayUvIndexIcon(final double currentUVI, final BuildContext context) {
+Row displayUvIndexIcon(final double currentUVI) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [

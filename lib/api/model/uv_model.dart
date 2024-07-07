@@ -64,9 +64,9 @@ class UVIndex {
   @override
   int get hashCode => now.hashCode ^ forecast.hashCode;
 
-  LineChartBarData readForecast() {
+  LineChartBarData readForecast(final int hours) {
     List<FlSpot> spots = [FlSpot(0, now.uvi)];
-    for (var i = 1; i < 25; i++) {
+    for (var i = 1; i <= hours; i++) {
       spots.add(FlSpot(i.toDouble(), forecast[i - 1].uvi));
     }
     return LineChartBarData(

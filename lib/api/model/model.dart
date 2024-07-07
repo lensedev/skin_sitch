@@ -51,9 +51,9 @@ class Breakdown {
   factory Breakdown.fromJson(String source) =>
       Breakdown.fromMap(json.decode(source) as Map<String, dynamic>);
 
-  double getUvUpperBound() {
+  double getUvUpperBound(final int hours) {
     double maxUv = uvIndex.now.uvi;
-    for (int i = 0; i < 24; i++) {
+    for (int i = 0; i < hours; i++) {
       maxUv = max(maxUv, uvIndex.forecast[i].uvi);
     }
     return maxUv;
